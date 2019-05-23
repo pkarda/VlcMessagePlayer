@@ -1,0 +1,86 @@
+﻿<Window x:Class="VlcMessagePlayer.MainApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vlc="clr-namespace:Vlc.DotNet.Wpf;assembly=Vlc.DotNet.Wpf"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:views="clr-namespace:VlcMessagePlayer.MainApp.Views"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:controls="clr-namespace:VlcMessagePlayer.SharedResources.UserControls;assembly=VlcMessagePlayer.ShraredResources"
+        xmlns:behaviors="clr-namespace:VlcMessagePlayer.ShraredResources.Behaviors;assembly=VlcMessagePlayer.ShraredResources"
+        Title="{Binding Title}" Height="600" Width="800"
+        mc:Ignorable="d">
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding PlayPauseCommand}" Gesture="Space" />
+    </Window.InputBindings>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding WindowClosing}" CommandParameter="{Binding}" />
+        </i:EventTrigger>
+        <prism:InteractionRequestTrigger SourceObject="{Binding CustomNotificationRequest}">
+            <prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True">
+                <prism:PopupWindowAction.WindowStyle>
+                    <Style TargetType="Window">
+                        <Setter Property="ShowInTaskbar" Value="False"/>
+                        <Setter Property="ResizeMode" Value="NoResize"/>
+                        <Setter Property="Width" Value="400"/>
+                        <Setter Property="Height" Value="300"/>
+                    </Style>
+                </prism:PopupWindowAction.WindowStyle>
+                <prism:PopupWindowAction.WindowContent>
+                    <views:OptionsView />
+                </prism:PopupWindowAction.WindowContent>
+            </prism:PopupWindowAction>
+        </prism:InteractionRequestTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="DarkGray">
+   
+            <controls:PlayerControl Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="0" 
+                                MediaPath="{Binding MediaPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                PlayTime="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                IsPlaying="{Binding IsPlaying, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                EndReached="{Binding EndReached, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                StartFrom="{Binding StartFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+
+        <Grid Grid.Row="1" x:Name="ControlButtonsPanel">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <!--<ColumnDefinition Width="*"/>-->
+            </Grid.ColumnDefinitions>
+            <Button Grid.Row="0" Grid.Column="0" Command="{Binding PlayPauseCommand}" Content="{Binding PlayStateLabel}"/>
+            <Button Grid.Row="0" Grid.Column="1" Command="{Binding OpenMediaCommand}">Open media</Button>
+            <Button Grid.Row="0" Grid.Column="2" Command="{Binding OpenMessagesCommand}">Open messages</Button>
+            
+            <Button Grid.Row="1" Grid.Column="0" Command="{Binding CustomNotificationCommand}" IsEnabled="False">Options</Button>
+            <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding PlayTime, StringFormat={}{0}ms}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0"  Padding="0,0,5,0"  HorizontalAlignment="Right" Text="Start from ms" />
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding StartFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <ListBox Height="120" Grid.Row="3" Grid.ColumnSpan="3" x:Name="MmessagesListBox" ItemsSource="{Binding DebugMessageList}" behaviors:ListBoxBehavior.ScrollOnNewItem="true"  Background="#012456">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Foreground="#FFFFFF"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</Window>
