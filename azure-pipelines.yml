@@ -12,20 +12,14 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildConfiguration: 'Debug'
 
 steps:
 - task: NuGetToolInstaller@0
 
-- task: VSBuild@1
+
+- task: MSBuild@1
   inputs:
-    solution: '**\*.sln'
-    vsVersion: '16.0'
+    solution: '**/*.sln'
     clean: true
     restoreNugetPackages: true
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
