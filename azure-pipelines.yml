@@ -16,13 +16,19 @@ variables:
 
 steps:
 - task: NuGetToolInstaller@0
+  displayName: 'NuGet Tool Installer'
 
-
-- task: MSBuild@1
+- task: NuGetCommand@2
+  displayName: 'Restore NuGet dependencies'
   inputs:
-    solution: '**/*.sln'
-    clean: true
-    restoreNugetPackages: true
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  displayName: 'Build $(buildConfiguration) $(buildPlatform)'
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
     
 - task: CopyFiles@2
   displayName: 'Copy files'
