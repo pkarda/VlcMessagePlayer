@@ -34,7 +34,7 @@ steps:
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
     SourceFolder: '$(build.sourcesdirectory)'
-    Contents: '**\bin\MainApp\$(buildConfiguration)\**'
+    Contents: '**\MainApp\bin\$(buildConfiguration)\**'
     TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
