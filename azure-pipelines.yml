@@ -16,28 +16,32 @@ variables:
 
 steps:
 - task: NuGetToolInstaller@0
+  displayName: 'NuGet Tool Installer'
 
-
-- task: MSBuild@1
+- task: NuGetCommand@2
+  displayName: 'Restore NuGet dependencies'
   inputs:
-    solution: '**/*.sln'
-    clean: true
-    restoreNugetPackages: true
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  displayName: 'Build $(buildConfiguration) $(buildPlatform)'
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
     
 - task: CopyFiles@2
-  displayName: 'Copy files'
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
   inputs:
-    Contents: '_buildOutput\\**\\*.dll'
-    TargetFolder: $(Build.ArtifactStagingDirectory)
+    SourceFolder: '$(build.sourcesdirectory)'
+    Contents: '**\MainApp\bin\$(buildConfiguration)\**'
+    TargetFolder: '$(build.artifactstagingdirectory)'
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publishing artifact drop'
+  displayName: 'Publish Artifact: drop'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'drop'
-    publishLocation: 'filePath'
-    targetPath: '$(Build.ArtifactStagingDirectory)\\outdir\\$(Build.DefinitionName)\\$(Build.BuildNumber)'
-
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    
 - task: DownloadBuildArtifacts@0
   inputs:
     buildType: 'current'
