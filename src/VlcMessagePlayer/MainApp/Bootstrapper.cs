@@ -1,8 +1,8 @@
-﻿using Prism.Unity;
-using System.Windows;
-using Microsoft.Practices.Unity;
-using VlcMessagePlayer.Common;
+﻿using Unity;
+using Prism.Unity;
 using VlcMessagePlayer.MainApp.Views;
+using System.Windows;
+using VlcMessagePlayer.Common;
 
 namespace VlcMessagePlayer.MainApp
 {
